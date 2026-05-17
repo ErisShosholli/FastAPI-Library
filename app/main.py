@@ -3,7 +3,7 @@ from app.database import engine, Base
 from app import models
 
 # Import all routers
-from app.routers import books, members, authors, categories
+from app.routers import books, members, authors, categories, loans
 
 # Create all database tables on startup
 Base.metadata.create_all(bind=engine)
@@ -14,15 +14,15 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Register each router with the app
-# This is like: app.use('/api/v1/books', booksRouter) in Express
+# Register all routers
 app.include_router(books.router)
 app.include_router(members.router)
 app.include_router(authors.router)
 app.include_router(categories.router)
+app.include_router(loans.router)
 
 
-# Health check endpoint
+# Health check
 @app.get("/api/v1/health", tags=["Health"])
 def health_check():
     return {"status": "ok", "library": "open"}
