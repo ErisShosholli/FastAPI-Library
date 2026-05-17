@@ -1,11 +1,9 @@
-# app/routers/books.py
-
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy import func, and_, or_
 from typing import Optional, List
 import math
-
+from datetime import date
 from app.database import get_db
 from app import models, schemas
 from app.auth import verify_api_key
@@ -389,3 +387,42 @@ def delete_book(
     db.delete(book)
     db.commit()
     return {"detail": f"Book {book_id} deleted successfully"}
+
+    # ─────────────────────────────────────────────
+# GET /api/v1/books/{book_id}/loan-history
+# ─────────────────────────────────────────────
+@router.get("/{book_id}/loan-history", response_model=schemas.PaginatedResponse)
+def book_loan_history(
+    book_id: int,
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: Session = Depends(get_db)
+):
+    book = db.query(models.Book).filter(models.Book.id == book_id).first()
+
+    if not book:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Book with id {book_id} not found"
+        )
+
+    # Base query: all loans for this book with member loaded
+    query = (
+        db.query(models.Loan)
+        .options(joinedload(models.Loan.member), joinedload(models.Loan.book))
+        .filter(models.Loan.book_id == book_id)
+        .order_by(models.Loan.loan_date.desc())
+    )
+
+    total = query.count()
+    total_pages = math.ceil(total / page_size) if total > 0 else 0
+
+    loans = query.offset((page - 1) * page_size).limit(page_size).all()
+
+    return {
+        "items": loans,
+        "page": page,
+        "page_size": page_size,
+        "total": total,
+        "total_pages": total_pages
+    }

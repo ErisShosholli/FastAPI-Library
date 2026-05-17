@@ -1,11 +1,10 @@
+# app/main.py
+
 from fastapi import FastAPI
 from app.database import engine, Base
 from app import models
+from app.routers import books, members, authors, categories, loans, reports
 
-# Import all routers
-from app.routers import books, members, authors, categories, loans
-
-# Create all database tables on startup
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
@@ -14,15 +13,14 @@ app = FastAPI(
     version="1.0.0"
 )
 
-# Register all routers
 app.include_router(books.router)
 app.include_router(members.router)
 app.include_router(authors.router)
 app.include_router(categories.router)
 app.include_router(loans.router)
+app.include_router(reports.router)
 
 
-# Health check
 @app.get("/api/v1/health", tags=["Health"])
 def health_check():
     return {"status": "ok", "library": "open"}
