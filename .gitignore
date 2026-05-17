@@ -1,0 +1,16 @@
+# Virtual environment 
+venv/
+
+# Python cache files 
+__pycache__/
+*.pyc
+*.pyo
+
+# The SQLite database file 
+*.db
+
+# Environment variables 
+.env
+
+# Alembic temp files
+*.egg-info/
