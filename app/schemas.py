@@ -208,13 +208,19 @@ class LoanResponse(BaseModel):
 # ══════════════════════════════════════════════
 # PAGINATION SCHEMAS
 # ══════════════════════════════════════════════
-class PaginatedResponse(BaseModel):
-    items: list                        # The actual data items for this page
-    page: int                          # Current page number
-    page_size: int                     # How many items per page
-    total: int                         # Total matching items (before pagination)
-    total_pages: int                   # How many pages exist in total
+class PaginatedBookResponse(BaseModel):
+    items: List[BookResponse]
+    page: int
+    page_size: int
+    total: int
+    total_pages: int
 
+class PaginatedLoanResponse(BaseModel):
+    items: List[LoanResponse]
+    page: int
+    page_size: int
+    total: int
+    total_pages: int
 
 # ══════════════════════════════════════════════
 # REPORT SCHEMAS

@@ -17,7 +17,7 @@ router = APIRouter(
 # ─────────────────────────────────────────────
 # GET /api/v1/loans — List loans with filters
 # ─────────────────────────────────────────────
-@router.get("/", response_model=schemas.PaginatedResponse)
+@router.get("/", response_model=schemas.PaginatedLoanResponse)
 def list_loans(
     # Optional filters — all have defaults so they're not required
     member_id: Optional[int] = Query(None, description="Filter by member ID"),

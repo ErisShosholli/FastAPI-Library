@@ -17,7 +17,7 @@ router = APIRouter(
 # ─────────────────────────────────────────────
 # GET /api/v1/books/search
 # ─────────────────────────────────────────────
-@router.get("/search", response_model=schemas.PaginatedResponse)
+@router.get("/search", response_model=schemas.PaginatedBookResponse)
 def search_books(
     # Free-text search on title (case-insensitive partial match)
     q: Optional[str] = Query(None, description="Partial title search"),
@@ -391,7 +391,7 @@ def delete_book(
     # ─────────────────────────────────────────────
 # GET /api/v1/books/{book_id}/loan-history
 # ─────────────────────────────────────────────
-@router.get("/{book_id}/loan-history", response_model=schemas.PaginatedResponse)
+@router.get("/{book_id}/loan-history", response_model=schemas.PaginatedLoanResponse)
 def book_loan_history(
     book_id: int,
     page: int = Query(1, ge=1),
